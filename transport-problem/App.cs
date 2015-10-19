@@ -32,10 +32,16 @@ namespace transport_problem
 
             for (int i = 0; i < this.dataGridView1.Columns.Count; i++)
             {
-                int stock = Convert.ToInt32(this.dataGridView1.Rows[0].Cells[i].Value);
-                int rate = Convert.ToInt32(this.dataGridView1.Rows[1].Cells[i].Value);
+                int[] rates = new int[SuppliersCount];
 
-                this.suppliers[i] = new Supplier(rate, stock);
+                int stock = Convert.ToInt32(this.dataGridView1.Rows[0].Cells[i].Value);
+
+                for (int j = 0; j < SuppliersCount; j++)
+                {
+                    rates[j] = Convert.ToInt32(this.dataGridView1.Rows[j + 1].Cells[i].Value);
+                }
+
+                this.suppliers[i] = new Supplier(rates, stock);
             }
 
             for(int i = 0; i < ConsumersCount; i++)
@@ -44,13 +50,23 @@ namespace transport_problem
 
                 this.consumers[i] = new Сonsumer(need);
             }
+
+            foreach (Supplier sup in this.suppliers)
+            {
+                MessageBox.Show(sup.GetStock().ToString());
+
+                foreach (int rate in sup.GetRates())
+                {
+                    MessageBox.Show(rate.ToString());
+                }
+            }
         }
 
 
         private void initButton_Click(object sender, EventArgs e)
         {
             this.dataGridView1.ColumnCount = Convert.ToInt32(this.numericUpDown1.Value);
-            this.dataGridView1.RowCount = 2;
+            this.dataGridView1.RowCount = Convert.ToInt32(this.numericUpDown2.Value) + 1;
             this.dataGridView1.AutoSize = true;
             this.dataGridView1.Visible = true;
 

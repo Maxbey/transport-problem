@@ -2,23 +2,23 @@
 {
     public class Supplier
     {
-        public Supplier(int rate, int stock)
+        private int stock;
+        private int[] rates;
+
+        public Supplier(int[] rates, int stock)
         {
-            SetRate(rate);
+            SetRate(rates);
             SetStock(stock);
         }
-
-        private int stock;
-        private int rate;
 
         public int GetStock()
         {
             return stock;
         }
 
-        public int GetRate()
+        public int[] GetRates()
         {
-            return rate;
+            return rates;
         }
 
         public void SetStock(int stock)
@@ -26,9 +26,9 @@
             this.stock = stock;
         }
 
-        public void SetRate(int rate)
+        public void SetRate(int[] rates)
         {
-            this.rate = rate;
+            this.rates = rates;
         }
 
     }
