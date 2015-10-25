@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using transport_problem.Classes;
+using transport_problem.SolutionMethods;
 
 namespace transport_problem
 {
@@ -30,9 +31,9 @@ namespace transport_problem
             this.suppliers = new Supplier[SuppliersCount];
             this.consumers = new Сonsumer[ConsumersCount];
 
-            for (int i = 0; i < this.dataGridView1.Columns.Count; i++)
+            /*for (int i = 0; i < SuppliersCount; i++)
             {
-                int[] rates = new int[SuppliersCount];
+                int[] rates = new int[ConsumersCount];
 
                 int stock = Convert.ToInt32(this.dataGridView1.Rows[0].Cells[i].Value);
 
@@ -49,17 +50,21 @@ namespace transport_problem
                 int need = Convert.ToInt32(this.dataGridView2.Rows[0].Cells[i].Value);
 
                 this.consumers[i] = new Сonsumer(need);
-            }
+            }*/
 
-            foreach (Supplier sup in this.suppliers)
-            {
-                MessageBox.Show(sup.GetStock().ToString());
+            suppliers[0] = new Supplier(new int[3]{2, 5, 2}, 180);
+            suppliers[1] = new Supplier(new int[3] { 7, 7, 13 }, 300);
+            suppliers[2] = new Supplier(new int[3] { 3, 6, 8 }, 120);
 
-                foreach (int rate in sup.GetRates())
-                {
-                    MessageBox.Show(rate.ToString());
-                }
-            }
+            consumers[0] = new Сonsumer(110);
+            consumers[1] = new Сonsumer(350);
+            consumers[2] = new Сonsumer(140);
+
+            
+
+            var method = new PhogelsMethod(suppliers, consumers);
+
+            method.GetSolution();
         }
 
 
