@@ -31,7 +31,7 @@ namespace transport_problem
             this.suppliers = new Supplier[SuppliersCount];
             this.consumers = new Сonsumer[ConsumersCount];
 
-            /*for (int i = 0; i < SuppliersCount; i++)
+            for (int i = 0; i < SuppliersCount; i++)
             {
                 int[] rates = new int[ConsumersCount];
 
@@ -50,15 +50,7 @@ namespace transport_problem
                 int need = Convert.ToInt32(this.dataGridView2.Rows[0].Cells[i].Value);
 
                 this.consumers[i] = new Сonsumer(need);
-            }*/
-
-            suppliers[0] = new Supplier(new int[3]{2, 5, 2}, 180);
-            suppliers[1] = new Supplier(new int[3] { 7, 7, 13 }, 300);
-            suppliers[2] = new Supplier(new int[3] { 3, 6, 8 }, 120);
-
-            consumers[0] = new Сonsumer(110);
-            consumers[1] = new Сonsumer(350);
-            consumers[2] = new Сonsumer(140);
+            }
 
             
 

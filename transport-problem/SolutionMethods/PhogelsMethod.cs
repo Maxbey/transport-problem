@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Windows.Forms;
 using transport_problem.Classes;
@@ -33,16 +34,6 @@ namespace transport_problem.SolutionMethods
                 int maxInRows = diffInRows.Max();
                 int maxInColumns = diffInColumns.Max();
 
-                /*MessageBox.Show("Columns");
-
-                foreach (int [] column in columns)
-                {
-                    foreach (int v in column)
-                    {
-                        MessageBox.Show(v.ToString());
-                    }
-                }*/
-
 
                 if (maxInRows > maxInColumns)
                 {
@@ -50,24 +41,26 @@ namespace transport_problem.SolutionMethods
                     rate = _suppliers[supplierIndex].GetRates().Min();
                     int consumerIndex = Array.IndexOf(_suppliers[supplierIndex].GetRates(), rate);
 
-                    //MessageBox.Show("Stock " + _suppliers[supplierIndex].GetStock() + " need " + _consumers[consumerIndex].GetRequirement() + " rate " + rate);
+                    MessageBox.Show("Row! Stock " + _suppliers[supplierIndex].GetStock() + " need " + _consumers[consumerIndex].GetRequirement() + " rate " + rate);
+                    
 
-                    makeTransportation(_consumers[consumerIndex], _suppliers[supplierIndex], rate);
+                    makeTransportation(consumerIndex, supplierIndex, rate);
                 }
                 else
                 {
+                    //MessageBox.Show(maxInColumns.ToString());
                     int consumerIndex = Array.IndexOf(diffInColumns, maxInColumns);
                     rate = columns[consumerIndex].Min();
 
                     int supplierIndex = Array.IndexOf(columns[consumerIndex], rate);
 
-                    //MessageBox.Show("Stock " + _suppliers[supplierIndex].GetStock() + " need " + _consumers[consumerIndex].GetRequirement() + " rate " + rate);
+                    MessageBox.Show("Column! Stock " + _suppliers[supplierIndex].GetStock() + " need " + _consumers[consumerIndex].GetRequirement() + " rate " + rate);
                     
-                    makeTransportation(_consumers[consumerIndex], _suppliers[supplierIndex], rate);
+                    makeTransportation(consumerIndex, supplierIndex, rate);
                 }
             }
 
-            //MessageBox.Show(_solution.getTotal().ToString());
+            MessageBox.Show(_solution.getTotal().ToString());
 
         }
 
@@ -75,14 +68,16 @@ namespace transport_problem.SolutionMethods
         private int DiffBtwTwoMinValues (int[] values)
         {
             if (values.Length == 1)
+            {
                 return values[0];
+            }
 
-            int a = values.Min();
-            int aIndex = Array.IndexOf(values, a);
+            int [] arr = new int[values.Length];
 
-            int b = values.Skip(aIndex + 1).Min();
+            Array.Copy(values, arr, values.Length);
+            Array.Sort(arr);
 
-            return Math.Abs(a - b);
+            return Math.Abs(arr[1] - arr[0]);
         }
 
         private int[] DiffInRows()
@@ -125,15 +120,21 @@ namespace transport_problem.SolutionMethods
             {
                 for (int j = 0; j < _suppliers.Length; j++)
                 {
-                    columns[i][j] = _suppliers[j].GetRates()[i];
+                    if (_suppliers[j].GetRates().Length > 0)
+                    {
+                        columns[i][j] = _suppliers[j].GetRates()[i];
+                    }
                 }
             }
 
             return columns;
         }
 
-        private void makeTransportation(Сonsumer consumer, Supplier supplier, int rate)
+        private void makeTransportation(int consumerIndex, int supplierIndex, int rate)
         {
+            Сonsumer consumer = _consumers[consumerIndex];
+            Supplier supplier = _suppliers[supplierIndex];
+
             if (consumer.GetRequirement() > supplier.GetStock())
             {
                 _solution.AddTransportation(supplier.GetStock(), rate);
@@ -144,7 +145,17 @@ namespace transport_problem.SolutionMethods
             {
                 _solution.AddTransportation(consumer.GetRequirement(), rate);
                 supplier.SetStock(supplier.GetStock() - consumer.GetRequirement());
-                _consumers = _consumers.Where(val => val != consumer).ToArray();
+                removeConsumer(consumerIndex);
+            }
+        }
+
+        private void removeConsumer(int consumerIndex)
+        {
+            _consumers = _consumers.Where(val => val != _consumers[consumerIndex]).ToArray();
+
+            foreach (Supplier supplier in _suppliers)
+            {
+                supplier.removeRate(consumerIndex);
             }
         }
     }
