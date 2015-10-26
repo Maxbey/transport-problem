@@ -34,8 +34,6 @@ namespace transport_problem.Classes
             foreach (int[] tr in _transportations)
             {
                 total += tr[0]*tr[1];
-
-                MessageBox.Show("Transportation " + "cargo " + tr[0] + " rate " + tr[1]);
             }
 
             return total;

@@ -154,7 +154,7 @@
             // 
             // CalculateButton
             // 
-            this.CalculateButton.Location = new System.Drawing.Point(209, 405);
+            this.CalculateButton.Location = new System.Drawing.Point(209, 463);
             this.CalculateButton.Name = "CalculateButton";
             this.CalculateButton.Size = new System.Drawing.Size(74, 22);
             this.CalculateButton.TabIndex = 8;
@@ -173,7 +173,7 @@
             this.dataGridView2.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             this.dataGridView2.ColumnHeadersVisible = false;
             this.dataGridView2.EnableHeadersVisualStyles = false;
-            this.dataGridView2.Location = new System.Drawing.Point(69, 349);
+            this.dataGridView2.Location = new System.Drawing.Point(69, 407);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersVisible = false;
             this.dataGridView2.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
@@ -198,7 +198,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(171, 307);
+            this.label5.Location = new System.Drawing.Point(171, 360);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(155, 16);
             this.label5.TabIndex = 11;
@@ -209,7 +209,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(568, 455);
+            this.ClientSize = new System.Drawing.Size(568, 516);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.dataGridView2);

@@ -37,7 +37,7 @@ namespace transport_problem
 
                 int stock = Convert.ToInt32(this.dataGridView1.Rows[0].Cells[i].Value);
 
-                for (int j = 0; j < SuppliersCount; j++)
+                for (int j = 0; j < ConsumersCount; j++)
                 {
                     rates[j] = Convert.ToInt32(this.dataGridView1.Rows[j + 1].Cells[i].Value);
                 }
@@ -51,8 +51,6 @@ namespace transport_problem
 
                 this.consumers[i] = new Сonsumer(need);
             }
-
-            
 
             var method = new PhogelsMethod(suppliers, consumers);
 
