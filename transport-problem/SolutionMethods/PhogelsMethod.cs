@@ -17,7 +17,7 @@ namespace transport_problem.SolutionMethods
             this._suppliers = suppliers;
             this._consumers = consumers;
 
-            this._solution = new Solution();
+            this._solution = new Solution(suppliers.Length, consumers.Length);
         }
 
         public void GetSolution()
@@ -130,13 +130,13 @@ namespace transport_problem.SolutionMethods
 
             if (consumer.GetRequirement() >= supplier.GetStock())
             {
-                _solution.AddTransportation(supplier.GetStock(), rate);
+                _solution.AddTransportation(supplier.GetStock(), rate, supplierIndex, consumerIndex);
                 consumer.SetRequirement(consumer.GetRequirement() - supplier.GetStock());
                 _suppliers = _suppliers.Where(val => val != supplier).ToArray();
             }
             else
             {
-                _solution.AddTransportation(consumer.GetRequirement(), rate);
+                _solution.AddTransportation(consumer.GetRequirement(), rate, supplierIndex, consumerIndex);
                 supplier.SetStock(supplier.GetStock() - consumer.GetRequirement());
                 removeConsumer(consumerIndex);
             }

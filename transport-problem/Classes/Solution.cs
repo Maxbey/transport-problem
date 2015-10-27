@@ -5,35 +5,43 @@ namespace transport_problem.Classes
 {
     public class Solution
     {
-        private List<int[]> _transportations;
+        private Transportation[][] _transportations;
 
-        public Solution()
+        public Solution(int suppliersCnt, int consumersCnt)
         {
-            _transportations = new List<int[]>();
+            _transportations = new Transportation[suppliersCnt][];
+
+            for (int i = 0; i < suppliersCnt; i++)
+            {
+                _transportations[i] = new Transportation[consumersCnt];
+
+                for (int j = 0; j < consumersCnt; j++)
+                {
+                    _transportations[i][j] = new Transportation(0, 0);
+                }
+            }
         }
 
-        public void AddTransportation(int cargoCnt, int rate)
+        public void AddTransportation(int cargoCnt, int rate, int supplierIndex, int consumerIndex)
         {
-            var transportation = new int[2];
+            var transportation = new Transportation(cargoCnt, rate);
 
-            transportation[0] = cargoCnt;
-            transportation[1] = rate;
-
-            _transportations.Add(transportation);
-        }
-
-        public List<int[]> GetTransportations()
-        {
-            return _transportations;
+            _transportations[supplierIndex][consumerIndex] = transportation;
         }
 
         public int getTotal()
         {
             int total = 0;
 
-            foreach (int[] tr in _transportations)
+            foreach (Transportation[] row in _transportations)
             {
-                total += tr[0]*tr[1];
+                foreach (Transportation transportation in row)
+                {
+                    MessageBox.Show("Transportation " + transportation.GetCargo() + " x " + transportation.GetRate());
+
+                    total += transportation.GetCargo() * transportation.GetRate();
+                }
+
             }
 
             return total;

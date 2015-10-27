@@ -52,6 +52,7 @@
     </Compile>
     <Compile Include="Classes\Solution.cs" />
     <Compile Include="Classes\Supplier.cs" />
+    <Compile Include="Classes\Transportation.cs" />
     <Compile Include="Classes\Сonsumer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
