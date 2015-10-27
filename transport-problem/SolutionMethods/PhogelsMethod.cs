@@ -12,6 +12,9 @@ namespace transport_problem.SolutionMethods
 
         private Solution _solution;
 
+        private int _rowShift;
+        private int _columnShift;
+
         public PhogelsMethod(Supplier[] suppliers, Сonsumer[] consumers)
         {
             this._suppliers = suppliers;
@@ -130,15 +133,19 @@ namespace transport_problem.SolutionMethods
 
             if (consumer.GetRequirement() >= supplier.GetStock())
             {
-                _solution.AddTransportation(supplier.GetStock(), rate, supplierIndex, consumerIndex);
+                _solution.AddTransportation(supplier.GetStock(), rate, supplierIndex + _rowShift, consumerIndex + _columnShift);
                 consumer.SetRequirement(consumer.GetRequirement() - supplier.GetStock());
                 _suppliers = _suppliers.Where(val => val != supplier).ToArray();
+
+                _rowShift++;
             }
             else
             {
-                _solution.AddTransportation(consumer.GetRequirement(), rate, supplierIndex, consumerIndex);
+                _solution.AddTransportation(consumer.GetRequirement(), rate, supplierIndex + _rowShift, consumerIndex + _columnShift);
                 supplier.SetStock(supplier.GetStock() - consumer.GetRequirement());
                 removeConsumer(consumerIndex);
+
+                _columnShift++;
             }
         }
 
