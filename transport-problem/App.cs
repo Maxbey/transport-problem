@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using transport_problem.Classes;
+using transport_problem.Table;
 using transport_problem.SolutionMethods;
 
 namespace transport_problem
@@ -16,7 +16,7 @@ namespace transport_problem
     public partial class App : Form
     {
         private Supplier[] suppliers;
-        private Сonsumer[] consumers;
+        private Consumer[] consumers;
 
         public App()
         {
@@ -29,7 +29,7 @@ namespace transport_problem
             int ConsumersCount = this.dataGridView2.Columns.Count;
 
             this.suppliers = new Supplier[SuppliersCount];
-            this.consumers = new Сonsumer[ConsumersCount];
+            this.consumers = new Consumer[ConsumersCount];
 
             for (int i = 0; i < SuppliersCount; i++)
             {
@@ -49,7 +49,7 @@ namespace transport_problem
             {
                 int need = Convert.ToInt32(this.dataGridView2.Rows[0].Cells[i].Value);
 
-                this.consumers[i] = new Сonsumer(need);
+                this.consumers[i] = new Consumer(need);
             }
 
             var method = new PhogelsMethod(suppliers, consumers);

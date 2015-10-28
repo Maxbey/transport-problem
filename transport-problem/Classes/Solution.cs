@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace transport_problem.Classes
+namespace transport_problem.Table
 {
     public class Solution
     {

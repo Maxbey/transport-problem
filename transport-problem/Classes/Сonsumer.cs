@@ -1,8 +1,8 @@
-﻿namespace transport_problem.Classes
+﻿namespace transport_problem.Table
 {
-    public class Сonsumer
+    public class Consumer
     {
-        public Сonsumer(int req)
+        public Consumer(int req)
         {
             SetRequirement(req);
         }
