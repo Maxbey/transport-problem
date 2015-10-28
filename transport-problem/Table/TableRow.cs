@@ -51,5 +51,32 @@ namespace transport_problem.Table
         {
             return _supplier.GetStock();
         }
+
+        public int GetPhogelDiff()
+        {
+            int[] rates = new int[_cells.Length];
+
+            for (int i = 0; i < _cells.Length; i++)
+            {
+                rates[i] = _cells[i].GetRate();
+            }
+
+            return Helpers.DiffBtwTwoMinValuesInArray(rates);
+        }
+
+        public Cell FindMinRateCell()
+        {
+            Cell min = _cells[0];
+
+            for (int i = 1; i < _cells.Length; i++)
+            {
+                if (_cells[i].GetRate() < min.GetRate())
+                {
+                    min = _cells[i];
+                }
+            }
+
+            return min;
+        }
     }
 }

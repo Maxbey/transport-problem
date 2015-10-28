@@ -16,19 +16,53 @@ namespace transport_problem.SolutionMethods
 
         public void GetSolution()
         {
+            int[] rowsDiffs = getDiffsInRows();
+            int[] columnsDiffs = getDiffsInColumns();
+
+            int maxInRows = rowsDiffs.Max();
+            int maxInColumns = columnsDiffs.Max();
+
+
+            if (maxInRows > maxInColumns)
+            {
+                int rowIndex = Array.IndexOf(rowsDiffs, maxInRows);
+
+                Cell cell = _table.GetRow(rowIndex).FindMinRateCell();
+            }
+            else
+            {
+                int columnIndex = Array.IndexOf(columnsDiffs, maxInColumns);
+
+                Cell cell = _table.GetColumn(columnIndex).FindMinRateCell();
+            }
+        }
+
+        private int[] getDiffsInRows()
+        {
+            int[] diffs = new int[_table.GetRowsCnt()];
+
             for (int i = 0; i < _table.GetRowsCnt(); i++)
             {
                 TableRow row = _table.GetRow(i);
 
-                MessageBox.Show("Row index " + row.GetIndex() + " Row supplier stock " + row.GetSupplierStock());
-
-                for (int j = 0; j < row.GetElementsCnt(); j++)
-                {
-                    Cell cell = row.GetCell(j);
-
-                    MessageBox.Show("Cell with supplier stock " + cell.GetRow().GetSupplierStock() + " with consumer needs " + cell.GetColumn().GetConsumerRequirement() + "With rate " + cell.GetRate());
-                }
+                diffs[i] = row.GetPhogelDiff();
             }
+
+            return diffs;
+        }
+
+        private int[] getDiffsInColumns()
+        {
+            int[] diffs = new int[_table.GetColumnsCnt()];
+
+            for (int i = 0; i < _table.GetColumnsCnt(); i++)
+            {
+                TableColumn column = _table.GetColumn(i);
+
+                diffs[i] = column.GetPhogelDiff();
+            }
+
+            return diffs;
         }
     }
 }

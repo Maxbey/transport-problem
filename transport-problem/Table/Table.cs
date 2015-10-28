@@ -38,6 +38,7 @@ namespace transport_problem.Table
                 }
 
                 column.BindCells(cells);
+                _columns[i] = column;
             }
         }
 
@@ -46,7 +47,7 @@ namespace transport_problem.Table
             return _rows.Length;
         }
 
-        public int GetCOlumnsCnt()
+        public int GetColumnsCnt()
         {
             return _columns.Length;
         }
@@ -59,6 +60,16 @@ namespace transport_problem.Table
             }
 
             return _rows[index];
+        }
+
+        public TableColumn GetColumn(int index)
+        {
+            if (index > GetColumnsCnt() - 1)
+            {
+                throw new Exception("Attempt to access non-existent column with index " + index);
+            }
+
+            return _columns[index];
         }
     }
 }
