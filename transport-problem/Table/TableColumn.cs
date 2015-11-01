@@ -80,5 +80,20 @@ namespace transport_problem.Table
             return _index;
         }
 
+        public Consumer GetConsumer()
+        {
+            return _consumer;
+        }
+
+        public void UnbindCell(Cell cell)
+        {
+            _cells = _cells.Where(val => val != cell).ToArray();
+        }
+
+        public Cell[] GetCells()
+        {
+            return _cells;
+        }
+
     }
 }

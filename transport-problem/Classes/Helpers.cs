@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace transport_problem.Table
 {
@@ -10,12 +11,13 @@ namespace transport_problem.Table
             if (values.Length == 1)
                 return values[0];
 
-            int a = values.Min();
-            int aIndex = Array.IndexOf(values, a);
+            int[] copy = new int[values.Length];
+            Array.Copy(values, copy, values.Length);
 
-            int b = values.Skip(aIndex + 1).Min();
+            Array.Sort(copy);
 
-            return Math.Abs(a - b);
+            return Math.Abs(copy[1] - copy[0]);
         }
+
     }
 }

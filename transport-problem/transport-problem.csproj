@@ -59,7 +59,7 @@
     <Compile Include="Classes\Сonsumer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SolutionMethods\PhogelsMethod.cs" />
+    <Compile Include="SolutionMethods\VogelsMethod.cs" />
     <Compile Include="Table\TableColumn.cs" />
     <Compile Include="Table\TableRow.cs" />
     <EmbeddedResource Include="App.resx">

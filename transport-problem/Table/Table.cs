@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace transport_problem.Table
 {
@@ -70,6 +71,26 @@ namespace transport_problem.Table
             }
 
             return _columns[index];
+        }
+
+        public void RemoveRow(TableRow row)
+        {
+            foreach (Cell cell in row.GetCells())
+            {
+                cell.Remove();
+            }
+
+            _rows = _rows.Where(val => val != row).ToArray();
+        }
+
+        public void RemoveColumn(TableColumn column)
+        {
+            foreach (Cell cell in column.GetCells())
+            {
+                cell.Remove();
+            }
+
+            _columns = _columns.Where(val => val != column).ToArray();
         }
     }
 }

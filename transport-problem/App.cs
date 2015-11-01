@@ -52,7 +52,7 @@ namespace transport_problem
                 this.consumers[i] = new Consumer(need);
             }
 
-            var method = new PhogelsMethod(suppliers, consumers);
+            var method = new VogelsMethod(suppliers, consumers);
 
             method.GetSolution();
         }

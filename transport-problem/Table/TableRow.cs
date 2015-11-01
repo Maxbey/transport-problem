@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace transport_problem.Table
 {
@@ -77,6 +79,21 @@ namespace transport_problem.Table
             }
 
             return min;
+        }
+
+        public Supplier GetSupplier()
+        {
+            return _supplier;
+        }
+
+        public void UnbindCell(Cell cell)
+        {
+            _cells = _cells.Where(val => val != cell).ToArray();
+        }
+
+        public Cell[] GetCells()
+        {
+            return _cells;
         }
     }
 }

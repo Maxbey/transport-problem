@@ -33,6 +33,30 @@
             return _column;
         }
 
+        public int GetRowIndex()
+        {
+            return _row.GetIndex();
+        }
 
+        public int GetColumnIndex()
+        {
+            return _column.GetIndex();
+        }
+
+        public Supplier GetSupplier()
+        {
+            return _row.GetSupplier();
+        }
+
+        public Consumer GetConsumer()
+        {
+            return _column.GetConsumer();
+        }
+
+        public void Remove()
+        {
+            this.GetColumn().UnbindCell(this);
+            this.GetRow().UnbindCell(this);
+        }
     }
 }

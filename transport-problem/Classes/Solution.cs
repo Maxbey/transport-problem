@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using transport_problem.Table;
 
-namespace transport_problem.Table
+namespace transport_problem.Classes
 {
     public class Solution
     {
@@ -37,8 +36,6 @@ namespace transport_problem.Table
             {
                 foreach (Transportation transportation in row)
                 {
-                    MessageBox.Show("Transportation " + transportation.GetCargo() + " x " + transportation.GetRate());
-
                     total += transportation.GetCargo() * transportation.GetRate();
                 }
 
