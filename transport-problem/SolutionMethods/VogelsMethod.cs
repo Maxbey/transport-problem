@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using transport_problem.Classes;
 using transport_problem.Table;
+
 namespace transport_problem.SolutionMethods
 {
     public class VogelsMethod
@@ -21,56 +22,62 @@ namespace transport_problem.SolutionMethods
         {
             while (_table.GetRowsCnt() != 0 && _table.GetColumnsCnt() != 0)
             {
-                int[] rowsDiffs = getDiffsInRows();
-                int[] columnsDiffs = getDiffsInColumns();
+                VogelsDiff[] rowsDiffs = GetDiffsInRows();
+                VogelsDiff[] columnsDiffs = GetDiffsInColumns();
 
-                int maxInRows = rowsDiffs.Max();
-                int maxInColumns = columnsDiffs.Max();
+                VogelsDiff maxInRows = FindMaxVogelsDiff(rowsDiffs);
+                VogelsDiff maxInColumns = FindMaxVogelsDiff(columnsDiffs);
 
+                TableParentElement parentElement = maxInRows.GetDIff() > maxInColumns.GetDIff() ? maxInRows.GetParentElement() : maxInColumns.GetParentElement();
 
-                if (maxInRows > maxInColumns)
-                {
-                    int rowIndex = Array.IndexOf(rowsDiffs, maxInRows);
-                    Cell cell = _table.GetRow(rowIndex).FindMinRateCell();
-                    AddTransportation(cell);
-                }
-                else
-                {
-                    int columnIndex = Array.IndexOf(columnsDiffs, maxInColumns);
-                    Cell cell = _table.GetColumn(columnIndex).FindMinRateCell();
-                    AddTransportation(cell);
-                }
+                Cell cell = parentElement.FindMinRateCell();
+                AddTransportation(cell);
             }
 
             MessageBox.Show("Total price " + _solution.getTotal());
         }
 
-        private int[] getDiffsInRows()
+        private VogelsDiff[] GetDiffsInRows()
         {
-            int[] diffs = new int[_table.GetRowsCnt()];
+            VogelsDiff[] diffs = new VogelsDiff[_table.GetRowsCnt()];
 
             for (int i = 0; i < _table.GetRowsCnt(); i++)
             {
                 TableRow row = _table.GetRow(i);
 
-                diffs[i] = row.GetPhogelDiff();
+                diffs[i] = row.GetVogelsDiff();
             }
 
             return diffs;
         }
 
-        private int[] getDiffsInColumns()
+        private VogelsDiff[] GetDiffsInColumns()
         {
-            int[] diffs = new int[_table.GetColumnsCnt()];
+            VogelsDiff[] diffs = new VogelsDiff[_table.GetColumnsCnt()];
 
             for (int i = 0; i < _table.GetColumnsCnt(); i++)
             {
                 TableColumn column = _table.GetColumn(i);
 
-                diffs[i] = column.GetPhogelDiff();
+                diffs[i] = column.GetVogelsDiff();
             }
 
             return diffs;
+        }
+
+        private VogelsDiff FindMaxVogelsDiff(VogelsDiff[] diffs)
+        {
+            VogelsDiff max = diffs[0];
+
+            foreach (VogelsDiff diff in diffs)
+            {
+                if (diff.GetDIff() > max.GetDIff())
+                {
+                    max = diff;
+                }
+            }
+
+            return max;
         }
 
         private void AddTransportation(Cell cell)

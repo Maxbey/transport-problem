@@ -4,49 +4,24 @@ using System.Windows.Forms;
 
 namespace transport_problem.Table
 {
-    public class TableRow
+    public class TableRow : TableParentElement
     {
-        private readonly int _index;
-
         private Supplier _supplier;
-        private Cell[] _cells;
 
-        public TableRow(int index, Supplier supplier)
+        public TableRow(int index, Supplier supplier) : base(index)
         {
-            _index = index;
-
             _supplier = supplier;
-            _cells = new Cell[supplier.GetRates().Length];
+            Cells = new Cell[supplier.GetRates().Length];
 
             CreateCells();
         }
 
         private void CreateCells()
         {
-            for (int i = 0; i < _cells.Length; i++)
+            for (int i = 0; i < Cells.Length; i++)
             {
-                _cells[i] = new Cell(this, _supplier.GetRates()[i]);
+                Cells[i] = new Cell(this, _supplier.GetRates()[i]);
             }
-        }
-
-        public Cell GetCell(int index)
-        {
-            if (_cells.Length - 1 < index)
-            {
-                throw new Exception("Attempt to access non-existent cell. " + "Row index: " + _index + " Rate index: " + index);
-            }
-
-            return _cells[index];
-        }
-
-        public int GetIndex()
-        {
-            return _index;
-        }
-
-        public int GetElementsCnt()
-        {
-            return _cells.Length;
         }
 
         public int GetSupplierStock()
@@ -54,46 +29,9 @@ namespace transport_problem.Table
             return _supplier.GetStock();
         }
 
-        public int GetPhogelDiff()
-        {
-            int[] rates = new int[_cells.Length];
-
-            for (int i = 0; i < _cells.Length; i++)
-            {
-                rates[i] = _cells[i].GetRate();
-            }
-
-            return Helpers.DiffBtwTwoMinValuesInArray(rates);
-        }
-
-        public Cell FindMinRateCell()
-        {
-            Cell min = _cells[0];
-
-            for (int i = 1; i < _cells.Length; i++)
-            {
-                if (_cells[i].GetRate() < min.GetRate())
-                {
-                    min = _cells[i];
-                }
-            }
-
-            return min;
-        }
-
         public Supplier GetSupplier()
         {
             return _supplier;
-        }
-
-        public void UnbindCell(Cell cell)
-        {
-            _cells = _cells.Where(val => val != cell).ToArray();
-        }
-
-        public Cell[] GetCells()
-        {
-            return _cells;
         }
     }
 }

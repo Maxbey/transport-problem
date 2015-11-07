@@ -7,10 +7,14 @@
 
         private int rate;
 
+        private bool _active;
+
         public Cell(TableRow row, int r)
         {
             _row = row;
             rate = r;
+
+            Enable();
         }
 
         public void BindColumn(TableColumn column)
@@ -55,8 +59,22 @@
 
         public void Remove()
         {
-            this.GetColumn().UnbindCell(this);
-            this.GetRow().UnbindCell(this);
+            this.Disable();
+        }
+
+        public void Enable()
+        {
+            _active = true;
+        }
+
+        public void Disable()
+        {
+            _active = false;
+        }
+
+        public bool IsActive()
+        {
+            return _active;
         }
     }
 }
