@@ -29,16 +29,14 @@ namespace transport_problem.Table
         {
             int[] rates = new int[GetActiveCellsCnt()];
 
-            for (int i = 0; i < Cells.Length; )
+            for (int i = 0, c = 0; i < Cells.Length; i++)
             {
-                MessageBox.Show(i.ToString());
-
                 Cell cell = Cells[i];
 
                 if (cell.IsActive())
                 {
-                    rates[i] = cell.GetRate();
-                    i++;
+                    rates[c] = cell.GetRate();
+                    c++;
                 }
             }
 
