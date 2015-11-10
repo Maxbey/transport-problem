@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Windows.Forms;
-using transport_problem.Classes;
 using transport_problem.Table;
 
 namespace transport_problem.SolutionMethods
@@ -10,17 +9,15 @@ namespace transport_problem.SolutionMethods
     public class VogelsMethod
     {
         private Table.Table _table;
-        private Solution _solution;
 
         public VogelsMethod(Supplier[] suppliers, Consumer[] consumers)
         {
             _table = new Table.Table(suppliers, consumers);
-            _solution = new Solution(suppliers.Length, consumers.Length);
         }
 
         public void GetSolution()
         {
-            while (_table.GetRowsCnt() != 0 && _table.GetColumnsCnt() != 0)
+            while (_table.GetTotalRequirement() != 0)
             {
                 VogelsDiff[] rowsDiffs = GetDiffsInRows();
                 VogelsDiff[] columnsDiffs = GetDiffsInColumns();
@@ -34,18 +31,20 @@ namespace transport_problem.SolutionMethods
                 AddTransportation(cell);
             }
 
-            MessageBox.Show("Total price " + _solution.getTotal());
+            MessageBox.Show("Total price " + _table.GetTotalTransportationsPrice());
         }
 
         private VogelsDiff[] GetDiffsInRows()
         {
             VogelsDiff[] diffs = new VogelsDiff[_table.GetRowsCnt()];
 
-            for (int i = 0; i < _table.GetRowsCnt(); i++)
+            for (int i = 0, c = 0; i < _table.GetRowsCnt(); i++)
             {
                 TableRow row = _table.GetRow(i);
 
-                diffs[i] = row.GetVogelsDiff();
+                if (row.GetStock() == 0) continue;
+                diffs[c] = row.GetVogelsDiff();
+                c++;
             }
 
             return diffs;
@@ -55,11 +54,13 @@ namespace transport_problem.SolutionMethods
         {
             VogelsDiff[] diffs = new VogelsDiff[_table.GetColumnsCnt()];
 
-            for (int i = 0; i < _table.GetColumnsCnt(); i++)
+            for (int i = 0, c = 0; i < _table.GetColumnsCnt(); i++)
             {
                 TableColumn column = _table.GetColumn(i);
 
-                diffs[i] = column.GetVogelsDiff();
+                if (column.GetRequirement() == 0) continue;
+                diffs[c] = column.GetVogelsDiff();
+                c++;
             }
 
             return diffs;
@@ -71,7 +72,7 @@ namespace transport_problem.SolutionMethods
 
             foreach (VogelsDiff diff in diffs)
             {
-                if (diff.GetDIff() > max.GetDIff())
+                if (diff != null && (diff.GetDIff() > max.GetDIff()))
                 {
                     max = diff;
                 }
@@ -82,26 +83,29 @@ namespace transport_problem.SolutionMethods
 
         private void AddTransportation(Cell cell)
         {
-            Supplier supplier = cell.GetSupplier();
-            Consumer consumer = cell.GetConsumer();
             int rate = cell.GetRate();
+            int supplierStock = cell.GetRow().GetStock();
+            int consumerNeeds = cell.GetColumn().GetRequirement();
 
-            int supplierStock = supplier.GetStock();
-            int consumerNeeds = consumer.GetRequirement();
+            Transportation transportation;
 
             if (consumerNeeds > supplierStock)
             {
-                _solution.AddTransportation(supplierStock, rate, cell.GetRowIndex(), cell.GetColumnIndex());
+                transportation = new Transportation(supplierStock, rate);
+                cell.AddTransportation(transportation);
+
                 _table.RemoveRow(cell.GetRow());
-                consumer.SetRequirement(consumerNeeds - supplierStock);
-                supplier.SetStock(0);
+                cell.GetColumn().SetRequirement(consumerNeeds - supplierStock);
+                cell.GetRow().SetStock(0);
             }
             else
             {
-                _solution.AddTransportation(consumerNeeds, rate, cell.GetRowIndex(), cell.GetColumnIndex());
+                transportation = new Transportation(consumerNeeds, rate);
+                cell.AddTransportation(transportation);
+
                 _table.RemoveColumn(cell.GetColumn());
-                consumer.SetRequirement(0);
-                supplier.SetStock(supplierStock - consumerNeeds);
+                cell.GetColumn().SetRequirement(0);
+                cell.GetRow().SetStock(supplierStock - consumerNeeds);
             }
         }
     }

@@ -7,9 +7,13 @@ namespace transport_problem.Table
     {
         private Consumer _consumer;
 
+        private int _requirement;
+
         public TableColumn(int index, Consumer consumer) : base(index)
         {
             _consumer = consumer;
+
+            _requirement = consumer.GetRequirement();
         }
 
         public void BindCells(Cell[] cells)
@@ -22,9 +26,14 @@ namespace transport_problem.Table
             }
         }
 
-        public int GetConsumerRequirement()
+        public int GetRequirement()
         {
-            return _consumer.GetRequirement();
+            return _requirement;
+        }
+
+        public void SetRequirement(int requirement)
+        {
+            _requirement = requirement;
         }
 
         public Consumer GetConsumer()

@@ -9,6 +9,8 @@
 
         private bool _active;
 
+        private Transportation _transportation = null;
+
         public Cell(TableRow row, int r)
         {
             _row = row;
@@ -75,6 +77,21 @@
         public bool IsActive()
         {
             return _active;
+        }
+
+        public void AddTransportation(Transportation transportation)
+        {
+            _transportation = transportation;
+        }
+
+        public bool haveTransportation()
+        {
+            return _transportation != null;
+        }
+
+        public Transportation GetTransportation()
+        {
+            return _transportation;
         }
     }
 }

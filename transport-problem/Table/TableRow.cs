@@ -8,11 +8,14 @@ namespace transport_problem.Table
     {
         private Supplier _supplier;
 
+        private int _stock;
+
         public TableRow(int index, Supplier supplier) : base(index)
         {
             _supplier = supplier;
-            Cells = new Cell[supplier.GetRates().Length];
+            _stock = supplier.GetStock();
 
+            Cells = new Cell[supplier.GetRates().Length];
             CreateCells();
         }
 
@@ -24,9 +27,14 @@ namespace transport_problem.Table
             }
         }
 
-        public int GetSupplierStock()
+        public int GetStock()
         {
-            return _supplier.GetStock();
+            return _stock;
+        }
+
+        public void SetStock(int stock)
+        {
+            _stock = stock;
         }
 
         public Supplier GetSupplier()

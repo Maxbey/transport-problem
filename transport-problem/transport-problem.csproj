@@ -51,7 +51,6 @@
       <DependentUpon>App.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\Helpers.cs" />
-    <Compile Include="Classes\Solution.cs" />
     <Compile Include="Classes\Supplier.cs" />
     <Compile Include="SolutionMethods\VogelsDiff.cs" />
     <Compile Include="Table\Cell.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace transport_problem.Table
 {
@@ -79,8 +80,6 @@ namespace transport_problem.Table
             {
                 cell.Remove();
             }
-
-            _rows = _rows.Where(val => val != row).ToArray();
         }
 
         public void RemoveColumn(TableColumn column)
@@ -89,8 +88,23 @@ namespace transport_problem.Table
             {
                 cell.Remove();
             }
+        }
 
-            _columns = _columns.Where(val => val != column).ToArray();
+        public int GetTotalTransportationsPrice()
+        {
+            return (from row in _rows from cell in row.GetCells() where cell.haveTransportation() select cell.GetTransportation() into tr select tr.GetCargo()*tr.GetRate()).Sum();
+        }
+
+        public int GetTotalRequirement()
+        {
+            int totalRequirement = 0;
+
+            foreach (TableColumn column in _columns)
+            {
+                totalRequirement += column.GetRequirement();
+            }
+
+            return totalRequirement;
         }
     }
 }
