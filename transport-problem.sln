@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "transport-problem", "transport-problem\transport-problem.csproj", "{6C3CF44A-409F-459A-943A-9C5DABD43DA0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "transport-problem-tests", "transport-problem-tests\transport-problem-tests.csproj", "{884A9611-5B36-4F93-AFC9-26D1BB1F88A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6C3CF44A-409F-459A-943A-9C5DABD43DA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C3CF44A-409F-459A-943A-9C5DABD43DA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C3CF44A-409F-459A-943A-9C5DABD43DA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{884A9611-5B36-4F93-AFC9-26D1BB1F88A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{884A9611-5B36-4F93-AFC9-26D1BB1F88A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{884A9611-5B36-4F93-AFC9-26D1BB1F88A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{884A9611-5B36-4F93-AFC9-26D1BB1F88A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

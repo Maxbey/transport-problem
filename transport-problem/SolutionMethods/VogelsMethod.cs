@@ -15,7 +15,7 @@ namespace transport_problem.SolutionMethods
             _table = new Table.Table(suppliers, consumers);
         }
 
-        public void GetSolution()
+        public Table.Table GetSolution()
         {
             while (_table.GetTotalRequirement() != 0)
             {
@@ -31,7 +31,7 @@ namespace transport_problem.SolutionMethods
                 AddTransportation(cell);
             }
 
-            MessageBox.Show("Total price " + _table.GetTotalTransportationsPrice());
+            return _table;
         }
 
         private VogelsDiff[] GetDiffsInRows()
