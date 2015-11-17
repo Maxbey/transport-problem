@@ -54,7 +54,13 @@ namespace transport_problem
 
             var method = new VogelsMethod(suppliers, consumers);
 
-            method.GetSolution();
+            Table.Table firstlySolution = method.GetSolution();
+
+            MessageBox.Show("Total: " + firstlySolution.GetTotalTransportationsPrice());
+
+            var potentialsMethod = new PotentialsMethod(firstlySolution);
+
+            MessageBox.Show(potentialsMethod.IsOptimal() ? "Optimal" : "Not optimal");
         }
 
 

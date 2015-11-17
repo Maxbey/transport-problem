@@ -40,6 +40,5 @@ namespace transport_problem.Table
         {
             return _consumer;
         }
-
     }
 }

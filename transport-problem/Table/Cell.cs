@@ -11,6 +11,8 @@
 
         private Transportation _transportation = null;
 
+        private int _distributionIndex;
+
         public Cell(TableRow row, int r)
         {
             _row = row;
@@ -92,6 +94,16 @@
         public Transportation GetTransportation()
         {
             return _transportation;
+        }
+
+        public int GetDistributionIndex()
+        {
+            return _distributionIndex;
+        }
+
+        public void SetDistributionIndex(int index)
+        {
+            _distributionIndex = index;
         }
     }
 }

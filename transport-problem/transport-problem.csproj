@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\Supplier.cs" />
+    <Compile Include="SolutionMethods\PotentialsMethod.cs" />
     <Compile Include="SolutionMethods\VogelsDiff.cs" />
     <Compile Include="Table\Cell.cs" />
     <Compile Include="Table\Table.cs" />

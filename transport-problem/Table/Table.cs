@@ -106,5 +106,20 @@ namespace transport_problem.Table
 
             return totalRequirement;
         }
+
+        public int GetTransportationsCnt()
+        {
+            return _rows.SelectMany(row => row.GetCells()).Count(cell => cell.GetTransportation() != null);
+        }
+
+        public TableRow[] GetRows()
+        {
+            return _rows;
+        }
+
+        public TableColumn[] GetColumns()
+        {
+            return _columns;
+        }
     }
 }

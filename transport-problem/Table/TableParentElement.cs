@@ -10,9 +10,13 @@ namespace transport_problem.Table
         protected readonly int Index;
         protected Cell[] Cells;
 
+        private object _potential;
+
         public TableParentElement(int index)
         {
             Index = index;
+
+            _potential = null;
         }
 
         public Cell GetCell(int index)
@@ -95,6 +99,21 @@ namespace transport_problem.Table
         private int GetActiveCellsCnt()
         {
             return Cells.Count(cell => cell.IsActive());
+        }
+
+        public Object GetPotential()
+        {
+            return _potential;
+        }
+
+        public void SetPotential(int potential)
+        {
+            _potential = potential;
+        }
+
+        public bool HavePotential()
+        {
+            return _potential != null;
         }
     }
 }
