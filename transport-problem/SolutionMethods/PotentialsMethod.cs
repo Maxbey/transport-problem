@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Windows.Forms;
 using transport_problem.Table;
@@ -17,7 +18,7 @@ namespace transport_problem.SolutionMethods
         public bool IsOptimal()
         {
             if (!CheckDegeneracy())
-                throw new Exception("Degeneracy");
+                AddRandomTransportation();
 
             CalculatePotentials();
             CalculateDistrubution();
@@ -33,7 +34,6 @@ namespace transport_problem.SolutionMethods
             {
                 foreach (Cell cell in _table.GetRows().SelectMany(row => row.GetCells().Where(cell => cell.haveTransportation())))
                 {
-                    MessageBox.Show("Rate " + cell.GetRate());
 
                     TableRow row = cell.GetRow();
                     TableColumn column = cell.GetColumn();
@@ -45,13 +45,11 @@ namespace transport_problem.SolutionMethods
 
                     if (!row.HavePotential())
                     {
-                        MessageBox.Show("Row potential" + (cell.GetRate() - Convert.ToInt32(column.GetPotential())));
                         row.SetPotential(cell.GetRate() - Convert.ToInt32(column.GetPotential()));
                     }
 
                     else if (!column.HavePotential())
                     {
-                        MessageBox.Show("Column potential" + (cell.GetRate() - Convert.ToInt32(row.GetPotential())));
                         column.SetPotential(cell.GetRate() - Convert.ToInt32(row.GetPotential()));
                     }
                 }
@@ -80,6 +78,102 @@ namespace transport_problem.SolutionMethods
                 return false;
 
             return true;
+        }
+
+        private void AddRandomTransportation()
+        {
+            Cell cell = GetFreeCell();
+
+            cell.AddTransportation(new Transportation(0, 0));
+        }
+
+        /*private void MakeBetter()
+        {
+            Cell top = GetMinDistributionIndexCell();
+
+            ArrayList directions = GetPossibleDirections(top);
+
+            while (!CheckLoopEnd(top, ))
+            {
+                foreach (Cell cell in directions)
+                {
+                    GetPossibleDirections(cell);
+                }
+            }
+        }*/
+
+        private bool CheckLoopEnd(Cell top, Cell cell)
+        {
+            if (top == cell)
+            {
+                return true;
+            }
+
+            if (GetPossibleDirections(cell).Count == 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private ArrayList GetPossibleDirections(Cell top)
+        {
+            int rowIndex = top.GetRowIndex();
+            int columnIndex = top.GetColumnIndex();
+
+            ArrayList directions = new ArrayList();
+
+            if (rowIndex != 0)
+            {
+                directions.Add(_table.GetRow(rowIndex - 1).GetCell(columnIndex));
+            }
+            else if (rowIndex != _table.GetRowsCnt())
+            {
+                directions.Add(_table.GetRow(rowIndex + 1).GetCell(columnIndex));
+            }
+            else if (columnIndex != 0)
+            {
+                directions.Add(_table.GetColumn(columnIndex - 1).GetCell(rowIndex));
+            }
+            else if(columnIndex != _table.GetColumnsCnt())
+            {
+                directions.Add(_table.GetColumn(columnIndex + 1).GetCell(rowIndex));
+            }
+
+            return directions;
+        }
+
+        private Cell GetFreeCell()
+        {
+            foreach (TableRow row in _table.GetRows())
+            {
+                foreach (Cell cell in row.GetCells())
+                {
+                    if (!cell.haveTransportation())
+                        return cell;
+                }
+            }
+
+            throw new Exception("Cannot get free cell");
+        }
+
+        private Cell GetMinDistributionIndexCell()
+        {
+            Cell min = _table.GetRow(0).GetCell(0); 
+
+            foreach (TableRow row in _table.GetRows())
+            {
+                foreach (Cell cell in row.GetCells())
+                {
+                    if (cell.GetDistributionIndex() < min.GetDistributionIndex())
+                    {
+                        min = cell;
+                    }
+                }
+            }
+
+            return min;
         }
     }
 }
