@@ -87,40 +87,103 @@ namespace transport_problem.SolutionMethods
             cell.AddTransportation(new Transportation(0, 0));
         }
 
-        /*private void MakeBetter()
+        public void Otimize()
         {
             Cell top = GetMinDistributionIndexCell();
 
-            ArrayList directions = GetPossibleDirections(top);
+            ArrayList cycle = BuildRedistributionCycle(top); 
 
-            while (!CheckLoopEnd(top, ))
-            {
-                foreach (Cell cell in directions)
-                {
-                    GetPossibleDirections(cell);
-                }
-            }
-        }*/
-
-        private bool CheckLoopEnd(Cell top, Cell cell)
-        {
-            if (top == cell)
-            {
-                return true;
-            }
-
-            if (GetPossibleDirections(cell).Count == 0)
-            {
-                return true;
-            }
-
-            return false;
+            DoRedistribution(cycle);
         }
 
-        private ArrayList GetPossibleDirections(Cell top)
+        private void DoRedistribution(ArrayList cycle)
         {
-            int rowIndex = top.GetRowIndex();
-            int columnIndex = top.GetColumnIndex();
+            //redistibution
+        }
+
+        private ArrayList BuildRedistributionCycle(Cell top)
+        {
+            ArrayList cycles = new ArrayList();
+            ArrayList firstCycle = new ArrayList {top};
+
+            cycles.Add(firstCycle);
+
+            do
+            {
+                var a = cycles.ToArray();
+
+                foreach (ArrayList cycle in cycles.ToArray())
+                {
+                    if (CheckCycleNowhere(cycle))
+                    {
+                        cycles.Remove(cycle);
+                    }
+                    else if (CheckCycleFinal(cycle))
+                    {
+                        return cycle;
+                    }
+                    else
+                    {
+                        MakeCycleBranches(cycles, cycle);
+                    }
+                }
+
+            } while (cycles.Count != 1);
+
+            return cycles.Cast<ArrayList>().First();
+        }
+
+        private void MakeCycleBranches(ArrayList cycles, ArrayList cycle)
+        {
+            Cell last = cycle.Cast<Cell>().Last();
+            Cell secondLast = cycle.Cast<Cell>().Reverse().Skip(1).FirstOrDefault();
+            ArrayList originalCycle = (ArrayList) cycle.Clone();
+
+
+            ArrayList siblings = GetCellSiblings(last);
+            var sameCycle = true;
+
+            foreach (Cell sibling in siblings.Cast<Cell>().Where(sibling => sibling.haveTransportation() && sibling != secondLast))
+            {
+                if (!sameCycle)
+                {
+                    ArrayList newBranch = (ArrayList) originalCycle.Clone();
+                    newBranch.Add(sibling);
+
+                    cycles.Add(newBranch);
+                }
+
+                else
+                {
+                    cycle.Add(sibling);
+                    sameCycle = false;
+                }
+            }
+        }
+
+        private bool CheckCycleFinal(ArrayList cycle)
+        {
+            if (cycle.Count < 4)
+                return false;
+
+            Cell first = cycle.Cast<Cell>().First();
+            Cell last = cycle.Cast<Cell>().Last();
+
+            return GetCellSiblings(last).Cast<Cell>().Any(sibling => sibling == first);
+        }
+
+        private bool CheckCycleNowhere(ArrayList cycle)
+        {
+            Cell last = cycle.Cast<Cell>().Last();
+            Cell secondLast = cycle.Cast<Cell>().Reverse().Skip(1).FirstOrDefault();
+
+            return GetCellSiblings(last).Cast<Cell>().All(cell => !cell.haveTransportation() || cell == secondLast);
+        }
+
+        private ArrayList GetCellSiblings(Cell cell)
+        {
+            int rowIndex = cell.GetRowIndex();
+            int columnIndex = cell.GetColumnIndex();
 
             ArrayList directions = new ArrayList();
 
@@ -128,15 +191,17 @@ namespace transport_problem.SolutionMethods
             {
                 directions.Add(_table.GetRow(rowIndex - 1).GetCell(columnIndex));
             }
-            else if (rowIndex != _table.GetRowsCnt())
+
+            if (rowIndex != _table.GetRowsCnt() - 1)
             {
                 directions.Add(_table.GetRow(rowIndex + 1).GetCell(columnIndex));
             }
-            else if (columnIndex != 0)
+            if (columnIndex != 0)
             {
                 directions.Add(_table.GetColumn(columnIndex - 1).GetCell(rowIndex));
             }
-            else if(columnIndex != _table.GetColumnsCnt())
+
+            if(columnIndex != _table.GetColumnsCnt() - 1)
             {
                 directions.Add(_table.GetColumn(columnIndex + 1).GetCell(rowIndex));
             }
@@ -158,7 +223,7 @@ namespace transport_problem.SolutionMethods
             throw new Exception("Cannot get free cell");
         }
 
-        private Cell GetMinDistributionIndexCell()
+        public Cell GetMinDistributionIndexCell()
         {
             Cell min = _table.GetRow(0).GetCell(0); 
 

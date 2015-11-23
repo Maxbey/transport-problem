@@ -86,6 +86,11 @@
             _transportation = transportation;
         }
 
+        public void RemoveTransportation()
+        {
+            _transportation = null;
+        }
+
         public bool haveTransportation()
         {
             return _transportation != null;
