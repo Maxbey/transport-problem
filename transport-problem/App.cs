@@ -52,15 +52,22 @@ namespace transport_problem
                 this.consumers[i] = new Consumer(need);
             }
 
-            var method = new VogelsMethod(suppliers, consumers);
+            var vogelsMethod = new VogelsMethod(suppliers, consumers);
 
-            Table.Table firstlySolution = method.GetSolution();
+            Table.Table solution = vogelsMethod.GetSolution();
 
-            MessageBox.Show("Total: " + firstlySolution.GetTotalTransportationsPrice());
+            MessageBox.Show("Firstly solution total: " + solution.GetTotalTransportationsPrice());
 
-            var potentialsMethod = new PotentialsMethod(firstlySolution);
+            var potentialsMethod = new PotentialsMethod(solution);
 
-            MessageBox.Show(potentialsMethod.IsOptimal() ? "Optimal" : "Not optimal");
+            if (!potentialsMethod.IsOptimal())
+            {
+                MessageBox.Show("Firstly solution is not optimal. Optimize...");
+                potentialsMethod.Otimize();
+            }
+
+            MessageBox.Show("Done");
+            MessageBox.Show("Total: " + solution.GetTotalTransportationsPrice());
         }
 
 
@@ -79,6 +86,11 @@ namespace transport_problem
             this.label4.Visible = true;
             this.label5.Visible = true;
             this.CalculateButton.Visible = true;
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
