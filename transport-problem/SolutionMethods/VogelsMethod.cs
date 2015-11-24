@@ -31,6 +31,8 @@ namespace transport_problem.SolutionMethods
                 AddTransportation(cell);
             }
 
+            RemoveEmptyTransportations();
+
             return _table;
         }
 
@@ -106,6 +108,18 @@ namespace transport_problem.SolutionMethods
                 _table.RemoveColumn(cell.GetColumn());
                 cell.GetColumn().SetRequirement(0);
                 cell.GetRow().SetStock(supplierStock - consumerNeeds);
+            }
+        }
+
+        private void RemoveEmptyTransportations()
+        {
+            foreach (TableRow row in _table.GetRows())
+            {
+                foreach (Cell cell in row.GetCells())
+                {
+                    if(cell.haveTransportation() && cell.GetTransportation().GetCargo() == 0)
+                        cell.RemoveTransportation();
+                }
             }
         }
     }

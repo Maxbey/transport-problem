@@ -115,5 +115,10 @@ namespace transport_problem.Table
         {
             return _potential != null;
         }
+
+        public void RemovePotential()
+        {
+            _potential = null;
+        }
     }
 }

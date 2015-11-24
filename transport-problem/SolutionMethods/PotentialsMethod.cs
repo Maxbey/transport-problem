@@ -17,9 +17,13 @@ namespace transport_problem.SolutionMethods
 
         public bool IsOptimal()
         {
-            if (!CheckDegeneracy())
-                AddRandomTransportation();
 
+            if (!CheckDegeneracy())
+            {
+                AddRandomTransportation();
+            }
+
+            ResetPotentials();
             CalculatePotentials();
             CalculateDistrubution();
 
@@ -56,7 +60,7 @@ namespace transport_problem.SolutionMethods
             }
         }
 
-        public void CalculateDistrubution()
+        private void CalculateDistrubution()
         {
             foreach (TableRow row in _table.GetRows())
             {
@@ -64,6 +68,19 @@ namespace transport_problem.SolutionMethods
                 {
                     cell.SetDistributionIndex(cell.GetRate() - Convert.ToInt32(row.GetPotential()) - Convert.ToInt32(cell.GetColumn().GetPotential()));
                 }
+            }
+        }
+
+        private void ResetPotentials()
+        {
+            foreach (TableRow row in _table.GetRows())
+            {
+                row.RemovePotential();
+            }
+
+            foreach (TableColumn column in _table.GetColumns())
+            {
+                column.RemovePotential();
             }
         }
 
@@ -82,26 +99,77 @@ namespace transport_problem.SolutionMethods
 
         private void AddRandomTransportation()
         {
-            Cell cell = GetFreeCell();
+            Cell cell = GetRandomFreeCell();
 
-            cell.AddTransportation(new Transportation(0, 0));
+            cell.AddTransportation(new Transportation(0, cell.GetRate()));
         }
 
         public void Otimize()
         {
-            Cell top = GetMinDistributionIndexCell();
 
-            ArrayList cycle = BuildRedistributionCycle(top); 
+            while (!IsOptimal())
+            {
+                Cell top = GetMinDistributionIndexCell();
 
-            DoRedistribution(cycle);
+                MessageBox.Show(_table.GetTotalTransportationsPrice().ToString());
+                DoRedistribution(BuildRedistributionCycle(top));
+            }
+
         }
 
-        private void DoRedistribution(ArrayList cycle)
+        private void DoRedistribution(Cell[] cycle)
         {
-            //redistibution
+            MessageBox.Show("Cycle");
+
+            foreach (Cell cell in cycle)
+            {
+                MessageBox.Show(cell.GetRate().ToString());
+            }
+
+            ArrayList calculated = new ArrayList();
+            int min = GetMinTransportationCargo(cycle);
+
+            var arr = cycle.ToArray();
+
+            for (int i = 0; i < cycle.Length; i++)
+            {
+                Cell cell = (Cell) arr[i];
+
+                if (calculated.Contains(cell))
+                    continue;
+
+                Transportation transportation = cell.GetTransportation();
+
+                if (i == 0)
+                {
+                    cell.AddTransportation(new Transportation(min, cell.GetRate()));
+                    calculated.Add(cell);
+                    continue;
+                }
+
+                cell.AddTransportation(i%2 == 0
+                    ? new Transportation(transportation.GetCargo() + min,
+                        cell.GetRate())
+                    : new Transportation(transportation.GetCargo() - min,
+                        cell.GetRate()));
+
+                calculated.Add(cell);
+            }
         }
 
-        private ArrayList BuildRedistributionCycle(Cell top)
+        private int GetMinTransportationCargo(Cell[] cycle)
+        {
+            int min = cycle.Skip(1).First().GetTransportation().GetCargo();
+
+            foreach (Cell cell in cycle.Where(cell => cell.haveTransportation() && cell.GetTransportation().GetCargo() < min))
+            {
+                min = cell.GetTransportation().GetCargo();
+            }
+
+            return min;
+        }
+
+        private Cell[] BuildRedistributionCycle(Cell top)
         {
             ArrayList cycles = new ArrayList();
             ArrayList firstCycle = new ArrayList {top};
@@ -114,50 +182,72 @@ namespace transport_problem.SolutionMethods
 
                 foreach (ArrayList cycle in cycles.ToArray())
                 {
-                    if (CheckCycleNowhere(cycle))
+                    if (CheckCycleFinal(cycle))
                     {
-                        cycles.Remove(cycle);
+                        return cycle.Cast<Cell>().Reverse().Skip(1).Reverse().ToArray();
                     }
-                    else if (CheckCycleFinal(cycle))
-                    {
-                        return cycle;
-                    }
-                    else
-                    {
-                        MakeCycleBranches(cycles, cycle);
-                    }
+
+                    MakeCycleBranches(cycles, cycle);
+
                 }
 
-            } while (cycles.Count != 1);
-
-            return cycles.Cast<ArrayList>().First();
+            } while (true);
         }
 
         private void MakeCycleBranches(ArrayList cycles, ArrayList cycle)
         {
+            Cell first = cycle.Cast<Cell>().First();
+
             Cell last = cycle.Cast<Cell>().Last();
             Cell secondLast = cycle.Cast<Cell>().Reverse().Skip(1).FirstOrDefault();
+
             ArrayList originalCycle = (ArrayList) cycle.Clone();
 
+            TableRow row = last.GetRow();
+            TableColumn column = last.GetColumn();
 
-            ArrayList siblings = GetCellSiblings(last);
-            var sameCycle = true;
+            bool sameCycle = true;
 
-            foreach (Cell sibling in siblings.Cast<Cell>().Where(sibling => sibling.haveTransportation() && sibling != secondLast))
+            foreach (Cell cell in row.GetCells())
             {
-                if (!sameCycle)
+                if(cell == last)
+                    continue;
+
+                if (secondLast != null && secondLast.GetRow() == row && cell.GetColumnIndex() > last.GetColumnIndex() - secondLast.GetColumnIndex())
+                    continue;
+
+                if(!cell.haveTransportation() && cell != first)
+                    continue;
+
+                if (sameCycle)
                 {
-                    ArrayList newBranch = (ArrayList) originalCycle.Clone();
-                    newBranch.Add(sibling);
+                    cycle.Add(cell);
+                    sameCycle = false;
+                }
+                else
+                {
+                    ArrayList newBranch = (ArrayList)originalCycle.Clone();
+                    newBranch.Add(cell);
 
                     cycles.Add(newBranch);
                 }
+            }
 
-                else
-                {
-                    cycle.Add(sibling);
-                    sameCycle = false;
-                }
+            foreach (Cell cell in column.GetCells())
+            {
+                if (cell == last)
+                    continue;
+
+                if (!cell.haveTransportation())
+                    continue;
+
+                if (secondLast != null && secondLast.GetColumn() == column && cell.GetRowIndex() > last.GetColumnIndex() - secondLast.GetRowIndex())
+                    continue;
+
+                ArrayList newBranch = (ArrayList)originalCycle.Clone();
+                newBranch.Add(cell);
+
+                cycles.Add(newBranch);
             }
         }
 
@@ -169,15 +259,7 @@ namespace transport_problem.SolutionMethods
             Cell first = cycle.Cast<Cell>().First();
             Cell last = cycle.Cast<Cell>().Last();
 
-            return GetCellSiblings(last).Cast<Cell>().Any(sibling => sibling == first);
-        }
-
-        private bool CheckCycleNowhere(ArrayList cycle)
-        {
-            Cell last = cycle.Cast<Cell>().Last();
-            Cell secondLast = cycle.Cast<Cell>().Reverse().Skip(1).FirstOrDefault();
-
-            return GetCellSiblings(last).Cast<Cell>().All(cell => !cell.haveTransportation() || cell == secondLast);
+            return first == last;
         }
 
         private ArrayList GetCellSiblings(Cell cell)
@@ -209,18 +291,21 @@ namespace transport_problem.SolutionMethods
             return directions;
         }
 
-        private Cell GetFreeCell()
+        private Cell GetRandomFreeCell()
         {
-            foreach (TableRow row in _table.GetRows())
+            Random rand = new Random();
+            Cell cell;
+            do
             {
-                foreach (Cell cell in row.GetCells())
-                {
-                    if (!cell.haveTransportation())
-                        return cell;
-                }
+                int row = rand.Next(_table.GetRowsCnt());
+                int col = rand.Next(_table.GetColumnsCnt());
+
+                cell = _table.GetRow(row).GetCell(col);
             }
 
-            throw new Exception("Cannot get free cell");
+            while (cell.haveTransportation()) ;
+
+            return cell;
         }
 
         public Cell GetMinDistributionIndexCell()
