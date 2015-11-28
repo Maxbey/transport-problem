@@ -60,11 +60,17 @@ namespace transport_problem
 
             var potentialsMethod = new PotentialsMethod(solution);
 
-            if (!potentialsMethod.IsOptimal())
+            Logger logger = new Logger(solution);
+
+            while (!potentialsMethod.IsOptimal())
             {
-                MessageBox.Show("Firstly solution is not optimal. Optimize...");
+                logger.Log();
                 potentialsMethod.Otimize();
             }
+
+            logger.Log();
+
+            logger.ShowLog();
 
             MessageBox.Show("Done");
             MessageBox.Show("Total: " + solution.GetTotalTransportationsPrice());

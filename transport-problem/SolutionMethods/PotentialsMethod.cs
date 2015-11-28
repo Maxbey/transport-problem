@@ -18,7 +18,7 @@ namespace transport_problem.SolutionMethods
         public bool IsOptimal()
         {
 
-            if (!CheckDegeneracy())
+            if (CheckDegeneracy())
             {
                 AddRandomTransportation();
             }
@@ -27,7 +27,20 @@ namespace transport_problem.SolutionMethods
             CalculatePotentials();
             CalculateDistrubution();
 
-            return _table.GetRows().SelectMany(row => row.GetCells()).All(cell => cell.GetDistributionIndex() >= 0);
+            foreach (TableRow row in _table.GetRows())
+            {
+                foreach (Cell cell in row.GetCells())
+                {
+                    if (cell.GetDistributionIndex() < 0)
+                    {
+                        MessageBox.Show("Cell d.i. " + cell.GetDistributionIndex() + " rate " + cell.GetRate());
+                        return false;
+                    }
+                    
+                }
+            }
+
+            return true;
         }
 
         public void CalculatePotentials()
@@ -91,10 +104,7 @@ namespace transport_problem.SolutionMethods
 
         private bool CheckDegeneracy()
         {
-            if (_table.GetTransportationsCnt() < (_table.GetColumnsCnt() + _table.GetRowsCnt() - 1))
-                return false;
-
-            return true;
+            return _table.GetTransportationsCnt() < (_table.GetColumnsCnt() + _table.GetRowsCnt() - 1);
         }
 
         private void AddRandomTransportation()
@@ -107,25 +117,13 @@ namespace transport_problem.SolutionMethods
         public void Otimize()
         {
 
-            while (!IsOptimal())
-            {
-                Cell top = GetMinDistributionIndexCell();
-
-                MessageBox.Show(_table.GetTotalTransportationsPrice().ToString());
-                DoRedistribution(BuildRedistributionCycle(top));
-            }
+            Cell top = GetMinDistributionIndexCell();
+            DoRedistribution(BuildRedistributionCycle(top));
 
         }
 
         private void DoRedistribution(Cell[] cycle)
         {
-            MessageBox.Show("Cycle");
-
-            foreach (Cell cell in cycle)
-            {
-                MessageBox.Show(cell.GetRate().ToString());
-            }
-
             ArrayList calculated = new ArrayList();
             int min = GetMinTransportationCargo(cycle);
 
