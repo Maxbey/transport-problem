@@ -27,20 +27,7 @@ namespace transport_problem.SolutionMethods
             CalculatePotentials();
             CalculateDistrubution();
 
-            foreach (TableRow row in _table.GetRows())
-            {
-                foreach (Cell cell in row.GetCells())
-                {
-                    if (cell.GetDistributionIndex() < 0)
-                    {
-                        MessageBox.Show("Cell d.i. " + cell.GetDistributionIndex() + " rate " + cell.GetRate());
-                        return false;
-                    }
-                    
-                }
-            }
-
-            return true;
+            return _table.GetRows().SelectMany(row => row.GetCells()).All(cell => cell.GetDistributionIndex() >= 0);
         }
 
         public void CalculatePotentials()
@@ -152,16 +139,23 @@ namespace transport_problem.SolutionMethods
                         cell.GetRate()));
 
                 calculated.Add(cell);
+
+                if(cell.GetTransportation().GetCargo() == 0)
+                    cell.RemoveTransportation();
             }
         }
 
         private int GetMinTransportationCargo(Cell[] cycle)
         {
-            int min = cycle.Skip(1).First().GetTransportation().GetCargo();
+            int min = cycle[1].GetTransportation().GetCargo();
 
-            foreach (Cell cell in cycle.Where(cell => cell.haveTransportation() && cell.GetTransportation().GetCargo() < min))
+            for (int i = 1; i < cycle.Length; i++)
             {
-                min = cell.GetTransportation().GetCargo();
+                Cell cell = cycle[i];
+
+                if (i%2 != 0 && cell.GetTransportation().GetCargo() < min)
+                    min = cell.GetTransportation().GetCargo();
+
             }
 
             return min;
@@ -176,7 +170,6 @@ namespace transport_problem.SolutionMethods
 
             do
             {
-                var a = cycles.ToArray();
 
                 foreach (ArrayList cycle in cycles.ToArray())
                 {
@@ -260,35 +253,6 @@ namespace transport_problem.SolutionMethods
             return first == last;
         }
 
-        private ArrayList GetCellSiblings(Cell cell)
-        {
-            int rowIndex = cell.GetRowIndex();
-            int columnIndex = cell.GetColumnIndex();
-
-            ArrayList directions = new ArrayList();
-
-            if (rowIndex != 0)
-            {
-                directions.Add(_table.GetRow(rowIndex - 1).GetCell(columnIndex));
-            }
-
-            if (rowIndex != _table.GetRowsCnt() - 1)
-            {
-                directions.Add(_table.GetRow(rowIndex + 1).GetCell(columnIndex));
-            }
-            if (columnIndex != 0)
-            {
-                directions.Add(_table.GetColumn(columnIndex - 1).GetCell(rowIndex));
-            }
-
-            if(columnIndex != _table.GetColumnsCnt() - 1)
-            {
-                directions.Add(_table.GetColumn(columnIndex + 1).GetCell(rowIndex));
-            }
-
-            return directions;
-        }
-
         private Cell GetRandomFreeCell()
         {
             Random rand = new Random();
@@ -308,13 +272,13 @@ namespace transport_problem.SolutionMethods
 
         public Cell GetMinDistributionIndexCell()
         {
-            Cell min = _table.GetRow(0).GetCell(0); 
+            Cell min = GetRandomFreeCell(); 
 
             foreach (TableRow row in _table.GetRows())
             {
                 foreach (Cell cell in row.GetCells())
                 {
-                    if (cell.GetDistributionIndex() < min.GetDistributionIndex())
+                    if (cell.GetDistributionIndex() < min.GetDistributionIndex() && !cell.haveTransportation())
                     {
                         min = cell;
                     }

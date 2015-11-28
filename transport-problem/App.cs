@@ -25,6 +25,32 @@ namespace transport_problem
 
         private void CalculateButton_Click(object sender, EventArgs e)
         {
+            InitData();
+
+            var firstlyMethod = new NorthwestCornerMethod(suppliers, consumers);
+            //var firstlyMethod = new VogelsMethod(suppliers, consumers);
+
+            Table.Table solution = firstlyMethod.GetSolution();
+
+            var optimizeMethod = new PotentialsMethod(solution);
+
+            Logger logger = new Logger(solution);
+
+            while (!optimizeMethod.IsOptimal())
+            {
+                logger.Log();
+                optimizeMethod.Otimize();
+            }
+
+            logger.Log();
+
+            logger.ShowLog();
+
+            MessageBox.Show("Total: " + solution.GetTotalTransportationsPrice());
+        }
+
+        private void InitData()
+        {
             int SuppliersCount = this.dataGridView1.Columns.Count;
             int ConsumersCount = this.dataGridView2.Columns.Count;
 
@@ -45,37 +71,13 @@ namespace transport_problem
                 this.suppliers[i] = new Supplier(rates, stock);
             }
 
-            for(int i = 0; i < ConsumersCount; i++)
+            for (int i = 0; i < ConsumersCount; i++)
             {
                 int need = Convert.ToInt32(this.dataGridView2.Rows[0].Cells[i].Value);
 
                 this.consumers[i] = new Consumer(need);
             }
-
-            var vogelsMethod = new VogelsMethod(suppliers, consumers);
-
-            Table.Table solution = vogelsMethod.GetSolution();
-
-            MessageBox.Show("Firstly solution total: " + solution.GetTotalTransportationsPrice());
-
-            var potentialsMethod = new PotentialsMethod(solution);
-
-            Logger logger = new Logger(solution);
-
-            while (!potentialsMethod.IsOptimal())
-            {
-                logger.Log();
-                potentialsMethod.Otimize();
-            }
-
-            logger.Log();
-
-            logger.ShowLog();
-
-            MessageBox.Show("Done");
-            MessageBox.Show("Total: " + solution.GetTotalTransportationsPrice());
         }
-
 
         private void initButton_Click(object sender, EventArgs e)
         {
