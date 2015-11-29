@@ -7,7 +7,7 @@
 
         public Supplier(int[] rates, int stock)
         {
-            SetRate(rates);
+            SetRates(rates);
             SetStock(stock);
         }
 
@@ -26,7 +26,7 @@
             this.stock = stock;
         }
 
-        public void SetRate(int[] rates)
+        public void SetRates(int[] rates)
         {
             this.rates = rates;
         }
@@ -45,7 +45,7 @@
                 c++;
             }
 
-            SetRate(newRates);
+            SetRates(newRates);
         }
 
     }

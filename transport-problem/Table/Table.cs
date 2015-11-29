@@ -97,14 +97,7 @@ namespace transport_problem.Table
 
         public int GetTotalRequirement()
         {
-            int totalRequirement = 0;
-
-            foreach (TableColumn column in _columns)
-            {
-                totalRequirement += column.GetRequirement();
-            }
-
-            return totalRequirement;
+            return _columns.Sum(column => column.GetRequirement());
         }
 
         public int GetTransportationsCnt()
@@ -120,6 +113,11 @@ namespace transport_problem.Table
         public TableColumn[] GetColumns()
         {
             return _columns;
+        }
+
+        public int GetTotalStock()
+        {
+            return GetRows().Sum(row => row.GetStock());
         }
     }
 }

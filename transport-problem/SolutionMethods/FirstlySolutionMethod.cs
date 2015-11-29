@@ -1,4 +1,5 @@
-﻿using transport_problem.Table;
+﻿using System;
+using transport_problem.Table;
 
 namespace transport_problem.SolutionMethods
 {
@@ -6,7 +7,7 @@ namespace transport_problem.SolutionMethods
     {
         protected Table.Table _table;
 
-        public FirstlySolutionMethod(Supplier[] suppliers, Consumer[] consumers)
+        protected FirstlySolutionMethod(Supplier[] suppliers, Consumer[] consumers)
         {
             _table = new Table.Table(suppliers, consumers);
         }

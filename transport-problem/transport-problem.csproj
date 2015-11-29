@@ -87,6 +87,7 @@
     <Compile Include="App.Designer.cs">
       <DependentUpon>App.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\Balancer.cs" />
     <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\Logger.cs" />
     <Compile Include="Classes\Supplier.cs" />

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Collections;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using transport_problem.Table;
@@ -15,8 +10,8 @@ namespace transport_problem
 {
     public partial class App : Form
     {
-        private Supplier[] suppliers;
-        private Consumer[] consumers;
+        private ArrayList _suppliers;
+        private ArrayList _consumers;
 
         public App()
         {
@@ -27,8 +22,13 @@ namespace transport_problem
         {
             InitData();
 
-            var firstlyMethod = new NorthwestCornerMethod(suppliers, consumers);
-            //var firstlyMethod = new VogelsMethod(suppliers, consumers);
+            Balancer balancer = new Balancer(_suppliers, _consumers);
+
+            if(!balancer.CheckBalance())
+                balancer.Balance();
+
+            //var firstlyMethod = new NorthwestCornerMethod(_suppliers.Cast<Supplier>().ToArray(), _consumers.Cast<Consumer>().ToArray());
+            var firstlyMethod = new VogelsMethod(_suppliers.Cast<Supplier>().ToArray(), _consumers.Cast<Consumer>().ToArray());
 
             Table.Table solution = firstlyMethod.GetSolution();
 
@@ -51,31 +51,31 @@ namespace transport_problem
 
         private void InitData()
         {
-            int SuppliersCount = this.dataGridView1.Columns.Count;
-            int ConsumersCount = this.dataGridView2.Columns.Count;
+            _suppliers = new ArrayList();
+            _consumers = new ArrayList();
 
-            this.suppliers = new Supplier[SuppliersCount];
-            this.consumers = new Consumer[ConsumersCount];
+            int suppliersCount = this.dataGridView1.Columns.Count;
+            int consumersCount = this.dataGridView2.Columns.Count;
 
-            for (int i = 0; i < SuppliersCount; i++)
+            for (int i = 0; i < suppliersCount; i++)
             {
-                int[] rates = new int[ConsumersCount];
+                int[] rates = new int[consumersCount];
 
                 int stock = Convert.ToInt32(this.dataGridView1.Rows[0].Cells[i].Value);
 
-                for (int j = 0; j < ConsumersCount; j++)
+                for (int j = 0; j < consumersCount; j++)
                 {
                     rates[j] = Convert.ToInt32(this.dataGridView1.Rows[j + 1].Cells[i].Value);
                 }
 
-                this.suppliers[i] = new Supplier(rates, stock);
+                _suppliers.Add(new Supplier(rates, stock));
             }
 
-            for (int i = 0; i < ConsumersCount; i++)
+            for (int i = 0; i < consumersCount; i++)
             {
                 int need = Convert.ToInt32(this.dataGridView2.Rows[0].Cells[i].Value);
 
-                this.consumers[i] = new Consumer(need);
+                _consumers.Add(new Consumer(need));
             }
         }
 
