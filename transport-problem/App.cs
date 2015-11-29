@@ -16,6 +16,8 @@ namespace transport_problem
         public App()
         {
             InitializeComponent();
+
+            ConfigureGui();
         }
 
         private void CalculateButton_Click(object sender, EventArgs e)
@@ -79,6 +81,12 @@ namespace transport_problem
             }
         }
 
+        private void ConfigureGui()
+        {
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowOnly;
+        }
+
         private void initButton_Click(object sender, EventArgs e)
         {
             this.dataGridView1.ColumnCount = Convert.ToInt32(this.numericUpDown1.Value);
@@ -94,11 +102,6 @@ namespace transport_problem
             this.label4.Visible = true;
             this.label5.Visible = true;
             this.CalculateButton.Visible = true;
-        }
-
-        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
